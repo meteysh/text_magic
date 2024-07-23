@@ -1,0 +1,23 @@
+{# templates/questions/index.html.twig #}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Questions</title>
+</head>
+<body>
+<form method="post" action="{{ path('submit_answers') }}">
+    {% for question in questions %}
+        <fieldset>
+            <legend>{{ question.text }} =</legend>
+            {% for answer in question.answers %}
+                <label>
+                    <input type="checkbox" name="answers[{{ question.id }}][]" value="{{ loop.index0 }}">
+                    {{ answer.text }}
+                </label><br>
+            {% endfor %}
+        </fieldset>
+    {% endfor %}
+    <button type="submit">Submit</button>
+</form>
+</body>
+</html>

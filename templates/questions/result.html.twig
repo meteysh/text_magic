@@ -1,0 +1,27 @@
+{# templates/answer/result.html.twig #}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+</head>
+<body>
+<h1>Results</h1>
+
+<h2>Вопросы с правильными ответами</h2>
+<ul>
+    {% for value in trueList %}
+        <li>{{ value }}</li>
+    {% endfor %}
+</ul>
+
+<h2>Вопросы с неправильными ответами</h2>
+<ul>
+    {% for value in falseList %}
+        <li>{{ value }}</li>
+    {% endfor %}
+</ul>
+</body>
+</html>
