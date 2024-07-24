@@ -4,16 +4,19 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Dto\AnswerDTO;
+use App\Dto\QuestionDTO;
+
 class AnswerCheckService
 {
     public function checkAnswers(array $formattedQuestions, array $selectedAnswers): array
     {
         $result = [];
         foreach ($selectedAnswers as $key => $userAnswers) {
-            $correctAnswer = $this->calculateSum($formattedQuestions[$key]['questionText']);
+            $correctAnswer = $this->calculateSum($formattedQuestions[$key]->getQuestionText());
             $options = [];
-            foreach ($formattedQuestions[$key]['answers'] as $answer) {
-                $options[] = $this->calculateSum($answer);
+            foreach ($formattedQuestions[$key]->getAnswers() as $answer) {
+                $options[] = $this->calculateSum($answer->getText());
             }
             $result[$key] = $this->check($correctAnswer, $options, $userAnswers);
         }
@@ -27,13 +30,11 @@ class AnswerCheckService
         foreach ($questions as $question) {
             $answers = [];
             foreach ($question->getAnswers() as $answer) {
-                $answers[] = $answer->getText();
+                $answers[] = new AnswerDTO($answer->getText());
             }
-            $formattedQuestions[$question->getId()] = [
-                'questionText' => $question->getText(),
-                'answers' => $answers
-            ];
+            $formattedQuestions[$question->getId()] = new QuestionDTO($question->getText(), $answers);
         }
+
         return $formattedQuestions;
     }
 

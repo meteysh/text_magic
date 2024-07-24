@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Dto\ResultDTO;
 use App\Repository\QuestionRepository;
 use App\Repository\UserAnswerRepository;
 use App\Service\AnswerCheckService;
@@ -41,9 +42,9 @@ class MainController extends AbstractController
         $result = $this->answerCheckService->checkAnswers($formattedQuestions, $selectedAnswers);
         $this->userAnswerRepository->saveUserAnswer($result);
 
-        $splittedResult = $this->splitAnswers($result, $formattedQuestions);
+        $splitResult = $this->splitAnswers($result, $formattedQuestions);
 
-        return $this->render('questions/result.html.twig', $splittedResult);
+        return $this->render('questions/result.html.twig', $splitResult);
     }
 
     private function splitAnswers(array $result, array $formattedQuestions): array
@@ -52,12 +53,16 @@ class MainController extends AbstractController
         $falseList = [];
 
         foreach ($result as $key => $value) {
-            if ($value === true) {
-                $trueList[] = $formattedQuestions[$key]['questionText'] . '=';
+            $questionText = $formattedQuestions[$key]->getQuestionText();
+            $resultDTO = new ResultDTO($questionText, $value);
+
+            if ($resultDTO->isCorrect()) {
+                $trueList[] = $resultDTO->getQuestionText() . '=';
             } else {
-                $falseList[] = $formattedQuestions[$key]['questionText'] . '=';
+                $falseList[] = $resultDTO->getQuestionText() . '=';
             }
         }
+
         return [
             'trueList' => $trueList,
             'falseList' => $falseList,
