@@ -26,7 +26,7 @@ class MainController extends AbstractController
     public function questions(): Response
     {
         $questions = $this->questionRepository->findAllQuestionsWithAnswers();
-
+        shuffle($questions);
         return $this->render('questions/index.html.twig', [
             'questions' => $questions,
         ]);
